@@ -1,0 +1,77 @@
+{
+  "name": "wplizard-cli",
+  "version": "0.0.0",
+  "description": "This tool is a setup wizard that enables WordPress plugin developers create starter projects (also called boilerplates) for their plugins quickly and easily. Note that it is currently focused on admin-heavy plugins.",
+  "keywords": [
+    "oclif",
+    "wplizard",
+    "wordpress",
+    "plugin-development",
+    "setup-wizard"
+  ],
+  "homepage": "https://github.com/WPLizard/wplizard-cli",
+  "bugs": "https://github.com/WPLizard/wplizard-cli/issues",
+  "repository": "WPLizard/wplizard-cli",
+  "license": "BSD 3-Clause License",
+  "author": "Ohachor Victor",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "wplizard-cli": "./bin/run.js"
+  },
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts",
+    "prepack": "oclif manifest && oclif readme",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "posttest": "pnpm run lint",
+    "version": "oclif readme && git add README.md"
+  },
+  "oclif": {
+    "bin": "wplizard-cli",
+    "commands": "./dist/commands",
+    "dirname": "wplizard-cli",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "hello": {
+        "description": "Say hello to the world and others"
+      }
+    }
+  },
+  "dependencies": {
+    "@oclif/core": "^3",
+    "@oclif/plugin-help": "^6",
+    "@oclif/plugin-plugins": "^5"
+  },
+  "devDependencies": {
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^3",
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "@types/node": "^18",
+    "chai": "^4",
+    "eslint": "^8",
+    "eslint-config-oclif": "^5",
+    "eslint-config-oclif-typescript": "^3",
+    "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10",
+    "oclif": "^4.8.8",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
