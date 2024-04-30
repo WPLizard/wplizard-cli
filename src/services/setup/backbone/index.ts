@@ -25,6 +25,7 @@ import steps from "./steps/index.js";
  */
 class Backbone {
     private completedSteps: string[] = [];
+
     private currentStep: BackboneSetupStep | null = null;
     private readonly lazy: boolean;
     private readonly root: string;
@@ -136,12 +137,19 @@ class Backbone {
      * @returns {Promise<void>} A promise that resolves when the user has selected a step.
      */
     private async setup() {
-        const choices = steps.map((step) => ({
-            description: "\n" + step.description,
-            disabled: this.isStepDisabled(step.id),
-            name: `${step.name} ${this.isStepCompleted(step.id) ? chalk.green('(✔)') : ''}`,
-            value: step.id,
-        }));
+        const choices = steps.map((step) => {
+            const disabled = this.isStepDisabled(step.id);
+            const completed = this.isStepCompleted(step.id);
+
+            const name = `${step.name} ${completed ? chalk.green('(✔)') : ''}`
+
+            return {
+                description: chalk.yellowBright(chalk.bold("\n=> " + step.description)),
+                disabled,
+                name: disabled ? chalk.gray(name) : completed ? chalk.bold(name) : name,
+                value: step.id,
+            }
+        });
 
         const stepId = await select({
             choices,

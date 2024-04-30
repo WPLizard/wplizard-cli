@@ -5,12 +5,12 @@ const steps: BackboneSetupStep[] = [
         async action() {
             console.log('Creating plugin directory structure...');
         },
-        description: 'Create the plugin\'s directory structure.',
-        id: 'create-plugin-structure',
-        name: 'Create Plugin Structure',
+        description: 'Setup directory structure.',
+        id: 'setup-directory-structure',
+        name: 'Setup Directory Structure',
         optional: false,
         async rollback() {
-            console.log('Rolling back create plugin structure...');
+            console.log('Rolling back setup directory structure...');
         },
     },
     {
@@ -31,7 +31,7 @@ const steps: BackboneSetupStep[] = [
         },
         description: 'Setup admin menu pages.',
         id: 'setup-admin-menu-pages',
-        name: 'Setup Admin Menu Pages',
+        name: 'Setup Admin Menu and Sub-Menu Pages',
         optional: true,
         async rollback() {
             console.log('Rolling back setup admin menu pages...');
@@ -78,11 +78,11 @@ const steps: BackboneSetupStep[] = [
             console.log('Using the generated wplizard.config.json file to setup the plugin...');
         },
         description: 'Use the generated wplizard.config.json file, which contains the data from steps 1-5, to setup the plugin.',
-        id: 'setup-plugin',
-        name: 'Setup Plugin',
+        id: 'complete-setup',
+        name: 'Complete Setup',
         optional: false,
         async rollback() {
-            console.log('Rolling back setup plugin...');
+            console.log('Rolling back complee setup...');
         },
     },
 ];
