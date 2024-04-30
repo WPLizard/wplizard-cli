@@ -1,0 +1,1 @@
+export { default as setupBackbone } from './backbone/index.js';
