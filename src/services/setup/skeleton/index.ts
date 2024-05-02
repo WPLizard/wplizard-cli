@@ -2,36 +2,36 @@ import { confirm, select } from "@inquirer/prompts";
 import chalk from "chalk";
 import path from "node:path";
 
-import { BackboneSetupStep } from "../types.js";
-import steps from "./steps/index.js";
+import { SkeletonPiece } from "../types.js";
+import CreateStructure from "./pieces/create-structure.js";
 
 /**
- * @summary This class is used by the SetupInitCommand class to setup the plugin's backbone.
+ * @summary This class is used by the SetupInitCommand class to setup the plugin's skeleton.
  * 
- * @description The BackboneSetup class is used to setup the plugin's backbone, which includes
+ * @description The SkeletonSetup class is used to setup the plugin's skeleton, which includes
  * the plugin's directory structure, the admin menu pages, starter files, and the essentials
  * necessary for the plugin to function on WordPress.
  * 
- * It is made up of 7 steps, which are:
+ * It is made up of 7 this.steps, which are:
  * - Step 1: Create the plugin's directory structure.
  * - Step 2: [OPTIONAL] Add dependencies.
  * - Step 3: [OPTIONAL] Setup admin menu pages.
  * - Step 4: Install the plugin's starter files.
  * - Step 5: [OPTIONAL] Generate documentation based on data from step 1-4.
  * - Step 6: Generate wplizard.config.json file.
- * - Step 7: Use the generated wplizard.config.json file, which contains the data from steps 1-5, to setup the plugin.
+ * - Step 7: Use the generated wplizard.config.json file, which contains the data from this.steps 1-5, to setup the plugin.
  * 
- * @class BackboneSetup
+ * @class SkeletonSetup
  */
-class Backbone {
+class Skeleton {
     private completedSteps: string[] = [];
-
-    private currentStep: BackboneSetupStep | null = null;
+    private currentStep: SkeletonPiece | null = null;
     private readonly lazy: boolean;
     private readonly root: string;
+    private readonly steps: SkeletonPiece[];
 
     /**
-     * Initializes the BackboneSetup class.
+     * Initializes the SkeletonSetup class.
      * 
      * @param {string} root The root directory path of the plugin.
      * @param {boolean} lazy If true, the setup will only execute after a wplizard.config.json file has been generated.
@@ -40,9 +40,20 @@ class Backbone {
         this.root = root;
         this.lazy = lazy;
 
+        // add the steps
+        this.steps = [
+            new CreateStructure({ lazy, root }),
+            // new AddDependencies({ lazy, root }),
+            // new SetupAdminMenuPages({ lazy, root }),
+            // new InstallStarterFiles({ lazy, root }),
+            // new GenerateDocumentation({ lazy, root }),
+            // new GenerateConfig({ lazy, root }),
+            // new SetupPlugin({ lazy, root }),
+        ];
+
         // eslint-disable-next-line no-warning-comments
         // TODO: cache the active step and completed steps in a file to persist the state
-        this.currentStep = steps[0];
+        this.currentStep = this.steps[0];
 
         // Start the setup.
         this.setup().then(() => {
@@ -70,7 +81,7 @@ class Backbone {
      * @returns {Promise<void>} A promise that resolves when the step is complete.
      */
     private async activateStep(id: string) {
-        const selectedStep = steps.find(step => id === step.id);
+        const selectedStep = this.steps.find(step => id === step.id);
         if (selectedStep) {
             this.currentStep = selectedStep;
         }
@@ -101,7 +112,7 @@ class Backbone {
 
     /**
      * @name run
-     * @description Runs the backbone setup.
+     * @description Runs the skeleton setup.
      * 
      * @returns {Promise<void>} A promise that resolves when the setup is complete.
      */
@@ -109,13 +120,13 @@ class Backbone {
         if (!this.currentStep) return;
 
         // Run the active step.
-        await this.currentStep.action({ lazy: this.lazy });
+        await this.currentStep.action();
 
-        // Add the active step to the completed steps array.
+        // Add the active step to the completed this.steps array.
         this.completedSteps.push(this.currentStep.id);
 
         // Set the next step as the active step.
-        this.currentStep = this.completedSteps.length < steps.length ? steps[this.completedSteps.length] : null;
+        this.currentStep = this.completedSteps.length < this.steps.length ? this.steps[this.completedSteps.length] : null;
 
         // Run the next step if it exists.
         if (this.currentStep) {
@@ -125,19 +136,19 @@ class Backbone {
 
     /**
      * @name setup
-     * @summary Shows the list of steps to the user.
+     * @summary Shows the list of this.steps to the user.
      * @description
      * This method does the following:
      * - Shows the list of steps to the user.
-     * - Marks the completed steps as done (using a checkmark) if the user has run the setup before.
-     * - Allows the user to click on the completed steps to rerun any of them if it's not step 6 and the setup is in lazy mode.
+     * - Marks the completed this.steps as done (using a checkmark) if the user has run the setup before.
+     * - Allows the user to click on the completed this.steps to rerun any of them if it's not step 6 and the setup is in lazy mode.
      * - Set the active step to the selected step.
      * - Trigger the hook that runs the selected step.
      * 
      * @returns {Promise<void>} A promise that resolves when the user has selected a step.
      */
     private async setup() {
-        const choices = steps.map((step) => {
+        const choices = this.steps.map((step) => {
             const disabled = this.isStepDisabled(step.id);
             const completed = this.isStepCompleted(step.id);
 
@@ -165,7 +176,7 @@ class Backbone {
             if (!rerun) {
                 console.log(chalk.yellow('Skipping step...'));
 
-                // show steps options again
+                // show this.steps options again
                 await this.setup();
                 return;
             }
@@ -176,5 +187,5 @@ class Backbone {
 }
 
 export default function (project: string, lazy: boolean) {
-    return new Backbone(project, lazy);
+    return new Skeleton(project, lazy);
 }

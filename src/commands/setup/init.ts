@@ -1,7 +1,7 @@
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 
-import { setupBackbone } from '../../services/setup/index.js'
+import { setupSkeleton } from '../../services/setup/index.js'
 
 export default class Init extends Command {
   static override args = {}
@@ -10,29 +10,12 @@ export default class Init extends Command {
 
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
-    '<%= config.bin %> <%= command.id %> --backbone',
+    '<%= config.bin %> <%= command.id %> --skeleton',
     '<%= config.bin %> <%= command.id %> --lazy=false',
     '<%= config.bin %> <%= command.id %> --run-installers',
   ]
 
   static override flags = {
-    /**
-     * @summary Whether to run the setup wizard in backbone mode.
-     * @description This mode will only setup the project's backbone, which includes the plugin's directory structure, configuration files,
-     * and other essential files necessary for the plugin to function on WordPress.
-     * 
-     * @example
-     * ```bash
-     * $ wplizard-cli setup init --backbone
-     * ```
-     */
-    backbone: Flags.boolean({
-      char: 'b',
-      default: false,
-      description: 'Run the setup wizard in backbone mode.',
-      name: 'backbone',
-    }),
-
     /**
      * @summary Whether to run the setup wizard in lazy mode.
      * @description
@@ -55,10 +38,10 @@ export default class Init extends Command {
      * @summary Run the installers after the setup wizard has completed.
      * @description
      * This flag will run the installers after the setup wizard has completed.
-     * After the backbone setup, it will run `composer install`
+     * After the skeleton setup, it will run `composer install`
      * and `npm install` if the UI-related part of the setup is completed.
      * 
-     * This means that when the setup wizard is run in backbone mode, only `composer install` will be run.
+     * This means that when the setup wizard is run in skeleton mode, only `composer install` will be run.
      * And when the setup wizard is run in full mode, both `composer install` and `npm install` will be run.
      * 
      * @example
@@ -73,6 +56,23 @@ export default class Init extends Command {
       description: 'Run the installers after the setup wizard has completed.',
       name: 'run-installers',
     }),
+
+    /**
+     * @summary Whether to run the setup wizard in skeleton mode.
+     * @description This mode will only setup the project's skeleton, which includes the plugin's directory structure, configuration files,
+     * and other essential files necessary for the plugin to function on WordPress.
+     * 
+     * @example
+     * ```bash
+     * $ wplizard-cli setup init --skeleton
+     * ```
+     */
+    skeleton: Flags.boolean({
+      char: 'b',
+      default: false,
+      description: 'Run the setup wizard in skeleton mode.',
+      name: 'skeleton',
+    }),
   }
 
   public async run(): Promise<void> {
@@ -81,11 +81,11 @@ export default class Init extends Command {
     
     const { flags } = await this.parse(Init)
     
-    if (flags.backbone) {
-      this.log(chalk.yellow('Running setup wizard in backbone mode...'))
+    if (flags.skeleton) {
+      this.log(chalk.bgCyan(chalk.white('Running setup wizard in skeleton mode...')))
     }
 
-    // Run the backbone setup.
-    setupBackbone(process.cwd(), flags.lazy)
+    // Run the skeleton setup.
+    setupSkeleton(process.cwd(), flags.lazy)
   }
 }
