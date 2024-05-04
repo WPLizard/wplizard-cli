@@ -21,7 +21,7 @@ devDependencies:
     version: 0.2.1
   '@oclif/test':
     specifier: ^3
-    version: 3.2.11
+    version: 3.2.12
   '@types/chai':
     specifier: ^4
     version: 4.3.14
@@ -1003,8 +1003,8 @@ packages:
     resolution: {integrity: sha512-XB8kwQj8zynXjIIWRm+6gO/r8Qft2xKtwBMSmq1JRqtA6TpwpqECqiu8LosBCyg2JBXuUy2lU23/L98KIR7FrQ==}
     dev: true
 
-  /@oclif/test@3.2.11:
-    resolution: {integrity: sha512-+bjUTI12kgqFYJtlNCYk0F+aIuYh4GDPZIviwSe9+rzd9kJMWEC3phUiviT41rroZzaPUcshnTVoZ5hyq+EIkg==}
+  /@oclif/test@3.2.12:
+    resolution: {integrity: sha512-6DqfPVnCuUaH4VqwAChTWlNla4uPVx3XP5EaxYLjQrSdAzgPn8TMftURDmcfDobU6qQr97Cywec4szfYg4pS7Q==}
     engines: {node: '>=18.0.0'}
     dependencies:
       '@oclif/core': 3.26.4
