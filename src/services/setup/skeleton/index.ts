@@ -56,9 +56,11 @@ class Skeleton {
         this.currentStep = this.steps[0];
 
         // Start the setup.
-        this.setup().then(() => {
+        this.setup().then((isReady) => {
             // Run the setup.
-            this.run();
+            if (isReady) {
+                this.run();
+            }
         });
     }
     
@@ -78,13 +80,19 @@ class Skeleton {
      * @summary Runs a specific step.
      * 
      * @param {string} id The step id to run.
-     * @returns {Promise<void>} A promise that resolves when the step is complete.
+     * @returns {Promise<boolean>} A promise that resolves when the step is complete.
      */
-    private async activateStep(id: string) {
+    private async activateStep(id: string): Promise<boolean> {
+        if (this.currentStep?.id === id) {
+            return true
+        }
+
         const selectedStep = this.steps.find(step => id === step.id);
         if (selectedStep) {
             this.currentStep = selectedStep;
         }
+
+        return selectedStep !== undefined
     }
 
     /**
@@ -145,9 +153,9 @@ class Skeleton {
      * - Set the active step to the selected step.
      * - Trigger the hook that runs the selected step.
      * 
-     * @returns {Promise<void>} A promise that resolves when the user has selected a step.
+     * @returns {Promise<boolean>} A promise that resolves when the user has selected a step.
      */
-    private async setup() {
+    private async setup(): Promise<boolean> {
         const choices = this.steps.map((step) => {
             const disabled = this.isStepDisabled(step.id);
             const completed = this.isStepCompleted(step.id);
@@ -165,7 +173,7 @@ class Skeleton {
         const stepId = await select({
             choices,
             default: this.currentStep?.id,
-            loop: false,
+            loop: true,
             message: 'Select a step to run:',
         });
 
@@ -178,11 +186,11 @@ class Skeleton {
 
                 // show this.steps options again
                 await this.setup();
-                return;
+                return false;
             }
         }
 
-        this.activateStep(stepId);
+        return this.activateStep(stepId);
     }
 }
 

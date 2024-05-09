@@ -39,19 +39,37 @@ export default class CreateStructure implements SkeletonPiece {
 
         // Set the options.
         this.options = { ...this.options, ...opts };
+
+        // start the setup
+        this.start().then(async (done) => {
+            if (done) {
+                if (!this.options.lazy) {
+                    await this.action();
+                }
+
+                this.completed = true;
+            }
+        });
     }
 
     get optional(): boolean {
         return this.options.optional;
     }
 
-    async action(): Promise<boolean> {
+    async action(): Promise<void> {
+        if (this.completed) {
+            return;
+        }
+
         console.log(chalk.gray('Creating plugin\'s skeletal directories...'));
-        return true;
     }
 
-    async rollback(): Promise<boolean> {
+    async rollback(): Promise<void> {
         console.log(chalk.gray('Rolling back step one (create plugin\'s skeletal directories)...'));
+    }
+
+    async start(): Promise<boolean> {
+        console.log(chalk.gray('Starting step one (create plugin\'s skeletal directories)...'));
         return true;
     }
 }

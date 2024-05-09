@@ -9,9 +9,9 @@ export interface SkeletonPiece {
      * @name action
      * @summary Runs the step's action.
      * 
-     * @returns {Promise<boolean>} A promise that resolves to true if the step was successful, false otherwise.
+     * @returns {Promise<void>} A promise that resolves when the action is complete.
      */    
-    action(): Promise<boolean>;
+    action(): Promise<void>;
 
     /**
      * @name description
@@ -43,7 +43,15 @@ export interface SkeletonPiece {
      * @name rollback
      * @summary Rolls back the step's action and reverts any changes made.
      * 
-     * @returns {Promise<boolean>} A promise that resolves to true if the rollback was successful, false otherwise.
+     * @returns {Promise<void>} A promise that resolves when the rollback is complete.
      */
-    rollback(): Promise<boolean>;
+    rollback(): Promise<void>;
+
+    /**
+     * @name start
+     * @summary Starts the step.
+     * 
+     * @returns {Promise<boolean>} A promise that resolves to true if the step was started, false otherwise.
+     */
+    start(): Promise<boolean>;
 }
