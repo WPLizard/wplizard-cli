@@ -4,3 +4,5 @@ export type SuggestibleDirectory = {
     name: string;
     required: boolean;
 }
+
+export type TransformedSuggestibleDirectory = Record<number, (TransformedSuggestibleDirectory | number)[]>;
