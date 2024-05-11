@@ -29,7 +29,7 @@ export default class Init extends Command {
      */
     lazy: Flags.boolean({
       char: 'l',
-      default: true,
+      default: false,
       description: 'Run the setup wizard in lazy mode.',
       name: 'lazy',
     }),

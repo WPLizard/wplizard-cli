@@ -1,5 +1,6 @@
 import { confirm, select } from "@inquirer/prompts";
 import chalk from "chalk";
+import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 import { SkeletonPiece } from "../types.js";
@@ -94,6 +95,20 @@ class Skeleton {
 
         return selectedStep !== undefined
     }
+    
+    /**
+     * Checks if the plugin's directory is empty.
+     * @returns {Promise<boolean>} A promise that resolves to true if the plugin's directory is empty, false otherwise.
+     */
+    private async isPluginDirectoryEmpty(): Promise<boolean> {
+        try {
+            const files = await readdir(this.root || process.cwd());
+            return files.length === 0;
+        } catch {
+            console.log(chalk.red('An error occurred while checking if the plugin\'s directory is empty.'));
+            return false;
+        }
+    }
 
     /**
      * @name isStepCompleted
@@ -128,7 +143,10 @@ class Skeleton {
         if (!this.currentStep) return;
 
         // Run the active step.
-        await this.currentStep.action();
+        await this.currentStep.start();
+        if (!this.lazy) {
+            await this.currentStep.action();
+        }
 
         // Add the active step to the completed this.steps array.
         this.completedSteps.push(this.currentStep.id);
@@ -156,11 +174,18 @@ class Skeleton {
      * @returns {Promise<boolean>} A promise that resolves when the user has selected a step.
      */
     private async setup(): Promise<boolean> {
-        const choices = this.steps.map((step) => {
+        // Check if the plugin's directory is empty.
+        const isEmpty = await this.isPluginDirectoryEmpty();
+        if (!isEmpty) {
+            console.log(chalk.yellow('The plugin\'s directory is not empty. Aborting setup...'));
+            return false;
+        }
+
+        const choices = this.steps.map((step, index) => {
             const disabled = this.isStepDisabled(step.id);
             const completed = this.isStepCompleted(step.id);
 
-            const name = `${step.name} ${completed ? chalk.green('(✔)') : ''}`
+            const name = `Step ${index + 1}: ` + chalk.yellow(`${step.name} ${completed ? chalk.green('(✔)') : ''}`);
 
             return {
                 description: chalk.yellowBright(chalk.bold("\n=> " + step.description)),
