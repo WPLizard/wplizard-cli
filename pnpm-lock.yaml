@@ -13,7 +13,7 @@ dependencies:
     version: 6.0.21
   '@oclif/plugin-plugins':
     specifier: ^5
-    version: 5.0.15
+    version: 5.0.19
 
 devDependencies:
   '@oclif/prettier-config':
@@ -952,6 +952,39 @@ packages:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
+  /@oclif/core@3.26.6:
+    resolution: {integrity: sha512-+FiTw1IPuJTF9tSAlTsY8bGK4sgthehjz7c2SvYdgQncTkxI2xvUch/8QpjNYGLEmUneNygvYMRBax2KJcLccA==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@types/cli-progress': 3.11.5
+      ansi-escapes: 4.3.2
+      ansi-styles: 4.3.0
+      cardinal: 2.1.1
+      chalk: 4.1.2
+      clean-stack: 3.0.1
+      cli-progress: 3.12.0
+      color: 4.2.3
+      debug: 4.3.4(supports-color@8.1.1)
+      ejs: 3.1.10
+      get-package-type: 0.1.0
+      globby: 11.1.0
+      hyperlinker: 1.0.0
+      indent-string: 4.0.0
+      is-wsl: 2.2.0
+      js-yaml: 3.14.1
+      minimatch: 9.0.4
+      natural-orderby: 2.0.3
+      object-treeify: 1.1.33
+      password-prompt: 1.1.3
+      slice-ansi: 4.0.0
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      supports-color: 8.1.1
+      supports-hyperlinks: 2.3.0
+      widest-line: 3.1.0
+      wordwrap: 1.0.0
+      wrap-ansi: 7.0.0
+
   /@oclif/plugin-help@6.0.21:
     resolution: {integrity: sha512-w860r9d456xhw1GPaos9yQF+BZeFY9UKdrINbL3fZFX5ZHhr/zGT4Fep5wUkHogjjnSB8+ZHi3D6j2jScIizUw==}
     engines: {node: '>=18.0.0'}
@@ -963,19 +996,19 @@ packages:
     engines: {node: '>=18.0.0'}
     dependencies:
       '@inquirer/confirm': 3.1.6
-      '@oclif/core': 3.26.4
+      '@oclif/core': 3.26.6
       chalk: 5.3.0
       fast-levenshtein: 3.0.0
     dev: true
 
-  /@oclif/plugin-plugins@5.0.15:
-    resolution: {integrity: sha512-PXSbfBz5RPARQVtwSlx3ES06JDddQc8RNo0XXOxOUQ5rs3HO3Me4sbW8A1cnOOEtiFn4TP76btjOKPxR8SVowg==}
+  /@oclif/plugin-plugins@5.0.19:
+    resolution: {integrity: sha512-5Y7e75dGQe6DrKz5fJrM3Nl790d2aY/rbCjHQ4Kk9jhmOvLF00IkrPElFCVDlbLCAESSt8zqR82nb7k0hcomeg==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@oclif/core': 3.26.4
+      '@oclif/core': 3.26.6
       chalk: 5.3.0
       debug: 4.3.4(supports-color@8.1.1)
-      npm: 10.5.0
+      npm: 10.7.0
       npm-package-arg: 11.0.2
       npm-run-path: 5.3.0
       object-treeify: 4.0.1
@@ -990,7 +1023,7 @@ packages:
     resolution: {integrity: sha512-RNEOE/bcTZ4sBbNc/ZxHzLMDEy7syAphMuO5FUVip8YWCronqioSTwRa+ZUDgohUEXSG0CEfwRZpQhDwk1IpGQ==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@oclif/core': 3.26.4
+      '@oclif/core': 3.26.6
       chalk: 5.3.0
       debug: 4.3.4(supports-color@8.1.1)
       http-call: 5.3.0
@@ -3950,8 +3983,8 @@ packages:
       path-key: 4.0.0
     dev: false
 
-  /npm@10.5.0:
-    resolution: {integrity: sha512-Ejxwvfh9YnWVU2yA5FzoYLTW52vxHCz+MHrOFg9Cc8IFgF/6f5AGPAvb5WTay5DIUP1NIfN3VBZ0cLlGO0Ys+A==}
+  /npm@10.7.0:
+    resolution: {integrity: sha512-FXylyYSXNjgXx3l82BT8RSQvCoGIQ3h8YdRFGKNvo3Pv/bKscK4pdWkx/onwTpHDqGw+oeLf4Rxln9WVyxAxlQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
     dev: false
@@ -3963,6 +3996,7 @@ packages:
       - '@npmcli/map-workspaces'
       - '@npmcli/package-json'
       - '@npmcli/promise-spawn'
+      - '@npmcli/redact'
       - '@npmcli/run-script'
       - '@sigstore/tuf'
       - abbrev
@@ -3971,8 +4005,6 @@ packages:
       - chalk
       - ci-info
       - cli-columns
-      - cli-table3
-      - columnify
       - fastest-levenshtein
       - fs-minipass
       - glob
@@ -4008,7 +4040,6 @@ packages:
       - npm-profile
       - npm-registry-fetch
       - npm-user-validate
-      - npmlog
       - p-map
       - pacote
       - parse-conflict-json
