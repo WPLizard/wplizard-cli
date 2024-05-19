@@ -3,18 +3,17 @@ import chalk from "chalk";
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 
-import { SkeletonPiece } from "../types.js";
-import CreateStructure from "./pieces/create-structure.js";
+import { PluginStructure, SkeletonPiece } from "../../repositories/skeleton/interactions/pieces/index.js";
 
 /**
  * @summary This class is used by the SetupInitCommand class to setup the plugin's skeleton.
  * 
  * @description The SkeletonSetup class is used to setup the plugin's skeleton, which includes
- * the plugin's directory structure, the admin menu pages, starter files, and the essentials
+ * the plugin's folder structure, the admin menu pages, starter files, and the essentials
  * necessary for the plugin to function on WordPress.
  * 
  * It is made up of 7 this.steps, which are:
- * - Step 1: Create the plugin's directory structure.
+ * - Step 1: Create the plugin's folder structure.
  * - Step 2: [OPTIONAL] Add dependencies.
  * - Step 3: [OPTIONAL] Setup admin menu pages.
  * - Step 4: Install the plugin's starter files.
@@ -34,7 +33,7 @@ class Skeleton {
     /**
      * Initializes the SkeletonSetup class.
      * 
-     * @param {string} root The root directory path of the plugin.
+     * @param {string} root The root folder path of the plugin.
      * @param {boolean} lazy If true, the setup will only execute after a wplizard.config.json file has been generated.
      */
     constructor(root: string, lazy: boolean) {
@@ -43,7 +42,7 @@ class Skeleton {
 
         // add the steps
         this.steps = [
-            new CreateStructure({ lazy, root }),
+            new PluginStructure({ lazy, root }),
             // new AddDependencies({ lazy, root }),
             // new SetupAdminMenuPages({ lazy, root }),
             // new InstallStarterFiles({ lazy, root }),
@@ -53,21 +52,25 @@ class Skeleton {
         ];
 
         // eslint-disable-next-line no-warning-comments
-        // TODO: cache the active step and completed steps in a file to persist the state
+        // TODO: cache the active step and completed steps (PROBABLY in a file) to persist the state
         this.currentStep = this.steps[0];
 
         // Start the setup.
-        this.setup().then((isReady) => {
+        this.setup().then((ready) => {
+            if (!ready) return;
+    
             // Run the setup.
-            if (isReady) {
-                this.run();
+            this.run();
+            if (this.lazy) {
+                // eslint-disable-next-line no-warning-comments
+                // TODO: execute the wplizard.config.json file if the setup is in lazy mode
             }
         });
     }
     
     /**
      * @name pluginName
-     * @description The plugin name from the root directory.
+     * @description The plugin name from the root folder.
      * 
      * @readonly
      * @returns {string} The plugin name.
@@ -87,7 +90,7 @@ class Skeleton {
         if (this.currentStep?.id === id) {
             return true
         }
-
+        
         const selectedStep = this.steps.find(step => id === step.id);
         if (selectedStep) {
             this.currentStep = selectedStep;
@@ -97,15 +100,15 @@ class Skeleton {
     }
     
     /**
-     * Checks if the plugin's directory is empty.
-     * @returns {Promise<boolean>} A promise that resolves to true if the plugin's directory is empty, false otherwise.
+     * Checks if the plugin's folder is empty.
+     * @returns {Promise<boolean>} A promise that resolves to true if the plugin's folder is empty, false otherwise.
      */
-    private async isPluginDirectoryEmpty(): Promise<boolean> {
+    private async isPluginFolderEmpty(): Promise<boolean> {
         try {
             const files = await readdir(this.root || process.cwd());
             return files.length === 0;
         } catch {
-            console.log(chalk.red('An error occurred while checking if the plugin\'s directory is empty.'));
+            console.log(chalk.red('An error occurred while checking if the plugin\'s folder is empty.'));
             return false;
         }
     }
@@ -143,9 +146,22 @@ class Skeleton {
         if (!this.currentStep) return;
 
         // Run the active step.
-        await this.currentStep.start();
+        const completed = await this.currentStep.start();
+        if (!completed) {
+            console.log(chalk.red('An error occurred while running the step.'));
+            return;
+        }
+
         if (!this.lazy) {
-            await this.currentStep.action();
+            try {
+                await this.currentStep.action();
+            } catch {
+                await this.currentStep.rollback(); // rollback changes
+                this.currentStep = null; // reset the current step
+
+                console.log(chalk.red('An error occurred while running this step.'));
+                return;
+            }
         }
 
         // Add the active step to the completed this.steps array.
@@ -174,10 +190,10 @@ class Skeleton {
      * @returns {Promise<boolean>} A promise that resolves when the user has selected a step.
      */
     private async setup(): Promise<boolean> {
-        // Check if the plugin's directory is empty.
-        const isEmpty = await this.isPluginDirectoryEmpty();
+        // Check if the plugin's folder is empty.
+        const isEmpty = await this.isPluginFolderEmpty();
         if (!isEmpty) {
-            console.log(chalk.yellow('The plugin\'s directory is not empty. Aborting setup...'));
+            console.log(chalk.yellow('The plugin\'s folder is not empty. Aborting setup...'));
             return false;
         }
 

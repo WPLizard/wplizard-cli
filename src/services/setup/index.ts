@@ -1,1 +1,1 @@
-export { default as setupSkeleton } from './skeleton/index.js';
+export { default as setupSkeleton } from './skeleton.js';
