@@ -1,6 +1,6 @@
 {
   "name": "wplizard-cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "This tool is a setup wizard that enables WordPress plugin developers create starter projects (also called boilerplates) for their plugins quickly and easily. Note that it is currently focused on admin-heavy plugins.",
   "keywords": [
     "oclif",
@@ -50,9 +50,16 @@
     }
   },
   "dependencies": {
+    "@inquirer/prompts": "^5.0.2",
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-plugins": "^5"
+    "@oclif/plugin-plugins": "^5",
+    "@types/cli-progress": "^3.11.5",
+    "chalk": "^5.3.0",
+    "cli-progress": "^3.12.0",
+    "natural": "^7.0.5",
+    "ora": "^8.0.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
@@ -60,6 +67,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^10",
     "@types/node": "^18",
+    "@types/uuid": "^9.0.8",
     "chai": "^4",
     "eslint": "^8",
     "eslint-config-oclif": "^5",
